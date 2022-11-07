@@ -1,8 +1,7 @@
-import { useDatePicker } from ".";
-import { LOCALE } from "./lib/constants";
+import { useDatePicker } from "../lib/context";
+import { LOCALE } from "../lib/constants";
 import CalendarIcon from "icons/calendar.svg";
-
-import styles from "./Header.module.scss";
+import sl from "./Header.scss";
 
 export const Header = () => {
   const { selectedDate, toggleDropdown } = useDatePicker();
@@ -10,13 +9,13 @@ export const Header = () => {
   const date = selectedDate.toLocaleString(LOCALE, {
     day: "numeric",
     month: "2-digit",
-    year: "numeric",
+    year: "numeric"
   });
 
   return (
-    <header className={styles.wrapper} onClick={toggleDropdown}>
-      <p className={styles.date}>{date}</p>
-      <div className={styles.icon}>
+    <header className={sl.wrapper} onClick={toggleDropdown}>
+      <p className={sl.date}>{date}</p>
+      <div className={sl.icon}>
         <CalendarIcon />
       </div>
     </header>

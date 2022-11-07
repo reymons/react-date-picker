@@ -1,44 +1,40 @@
 import { useState, useMemo } from "react";
 import cn from "classnames";
-import { ROW_COUNT, WEEKDAYS, LOCALE } from "./lib/constants";
-import { areDatesEqual, changeDate } from "./lib/utils";
-import { useDatePicker } from ".";
-
-import styles from "./TBody.module.scss";
-
-function map(length, callback) {
-  return Array.from({ length }, (_, i) => callback(i));
-}
+import { ROW_COUNT, WEEKDAYS } from "../lib/constants";
+import { areDatesEqual, changeDate, map } from "../lib/utils";
+import { useDatePicker } from "../lib/context";
+import sl from "./TBody.scss";
 
 export const TBody = ({ date }) => {
-  const { selectedDate, max, selectDate } = useDatePicker();
+  const { selectedDate, max, initialDate, selectDate } = useDatePicker();
   const [today] = useState(() => new Date());
 
-  const { prevMonth, nextMonth, daysUntilToday, totalDays, maxDate } =
-    useMemo(() => {
-      return {
-        prevMonth: new Date(date.getFullYear(), date.getMonth(), 0),
-        nextMonth: new Date(date.getFullYear(), date.getMonth() + 1, 1),
-        daysUntilToday:
-          new Date(date.getFullYear(), date.getMonth(), 1).getDay() - 2,
-        totalDays: new Date(
-          date.getFullYear(),
-          date.getMonth() + 1,
-          0
-        ).getDate(),
-        maxDate: max
-          ? new Date(date.getFullYear(), date.getMonth(), date.getDate() + max)
-          : null,
-      };
-    }, [date, max]);
+  const { prevMonth, nextMonth, daysUntilToday, totalDays, maxDate } = useMemo(
+    () => ({
+      prevMonth: new Date(date.getFullYear(), date.getMonth(), 0),
+      nextMonth: new Date(date.getFullYear(), date.getMonth() + 1, 1),
+      daysUntilToday:
+        new Date(date.getFullYear(), date.getMonth(), 1).getDay() - 2,
+      totalDays: new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate(),
+      maxDate:
+        typeof max === "number"
+          ? new Date(
+              initialDate.getFullYear(),
+              initialDate.getMonth(),
+              initialDate.getDate() + max
+            )
+          : null
+    }),
+    [date, initialDate, max]
+  );
 
   let currentDay = -daysUntilToday;
 
   return (
     <tbody>
-      {map(ROW_COUNT, (i) => (
+      {map(ROW_COUNT, i => (
         <tr key={i}>
-          {map(WEEKDAYS.length, (j) => {
+          {map(WEEKDAYS.length, j => {
             let day;
             let thisDate;
             let isInactive = false;
@@ -63,10 +59,10 @@ export const TBody = ({ date }) => {
 
             return (
               <td
-                className={cn(styles.cell, {
-                  [styles.selected]: isSelected,
-                  [styles.inactive]: isInactive,
-                  [styles.todays]: isTodays,
+                className={cn(sl.cell, {
+                  [sl.selected]: isSelected,
+                  [sl.inactive]: isInactive,
+                  [sl.todays]: isTodays
                 })}
                 key={i + j}
                 onClick={() => {

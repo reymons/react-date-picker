@@ -1,4 +1,4 @@
-import { WEEKDAYS } from "./lib/constants";
+import { WEEKDAYS } from "../lib/constants";
 
 export const THead = () => {
   return (
